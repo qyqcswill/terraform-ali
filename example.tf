@@ -1,10 +1,8 @@
-#
-# 
 provider "alicloud" {
-  region     = "cn-beijing"
+  region = "cn-beijing"
 }
 
-data "alicloud_instance_types" "c2g4" {
+data "alicloud_instance_types" "c4g8" {
   cpu_core_count = 4
   memory_size    = 8
 }
@@ -24,27 +22,27 @@ resource "alicloud_vswitch" "master-1" {
   cidr_block   = "192.168.1.0/24"
   vpc_id       = alicloud_vpc.main.id
   zone_id      = "cn-beijing-a"
-  tags = {
-     name = "Terraform"
-     role = "test"
-  }
 }
 
-# Create a web server
-resource "alicloud_ecs_instance_set" "web" {
-  image_id             = "${data.alicloud_images.alios.images.0.id}"
+# Create ecs instances
+resource "alicloud_instance" "web" {
+  image_id             = data.alicloud_images.alios.images.0.id
   internet_charge_type = "PayByBandwidth"
-
-  instance_type        = "${data.alicloud_instance_types.c2g4.instance_types.0.id}"
+  instance_type        = data.alicloud_instance_types.c4g8.instance_types.0.id
   system_disk_category = "cloud_efficiency"
-  security_group_ids      = ["${alicloud_security_group.default.id}"]
+  security_groups      = ["${alicloud_security_group.default.id}"]
   instance_name        = "web"
-  vswitch_id           = "${alicloud_vswitch.master-1.id}"
+  vswitch_id           = alicloud_vswitch.master-1.id
+  tags = {
+    name     = "Terraform"
+    role     = "test"
+    new-test = "swillTesting"
+  }
 }
 
 # Create security group
 resource "alicloud_security_group" "default" {
   name        = "default"
   description = "default"
-  vpc_id      = "${alicloud_vpc.main.id}"
+  vpc_id      = alicloud_vpc.main.id
 }
