@@ -23,7 +23,12 @@ resource "alicloud_vswitch" "master-1" {
   vpc_id       = alicloud_vpc.main.id
   zone_id      = "cn-beijing-a"
 }
-
+resource "alicloud_vswitch" "master-2" {
+  vswitch_name = "cn-beijing-a-1"
+  cidr_block   = "192.168.2.0/24"
+  vpc_id       = alicloud_vpc.main.id
+  zone_id      = "cn-beijing-a"
+}
 # Create ecs instances
 resource "alicloud_instance" "web" {
   image_id             = data.alicloud_images.alios.images.0.id
