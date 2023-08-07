@@ -3,7 +3,9 @@ provider "alicloud" {
 }
 
 module "my_module" {
-  source                      = "./tf_modules"
+  # source  = "${jfrog_server}/${repository_id}__${NAMESPACE}/${MODULE-NAME}/${PROVIDER}"
+  source                      = "${jfrog_server}}/swill-tf__new-space/tf_modules/alicloud"
+  version                     = "1.0.2"
   vpc_main_name               = "main"
   vpc_main_cidr_block         = "192.168.0.0/16"
   vswitch_master-1_name       = "master-1"
